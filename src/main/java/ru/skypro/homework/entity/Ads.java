@@ -11,7 +11,7 @@ public class Ads {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer pk;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User author;
     private int price;
     private String image;

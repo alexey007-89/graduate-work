@@ -24,4 +24,6 @@ public interface AdsService {
     FullAds getAds(int id);
 
     AdsDto updateAds(int id, AdsDto adsDto);
+
+    ResponseWrapperAds getAdsByTitle(String title);
 }

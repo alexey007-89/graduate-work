@@ -158,4 +158,16 @@ public class AdsController {
         }
         return ResponseEntity.ok(adsDto);
     }
+
+    @GetMapping("/title")
+    public ResponseEntity<ResponseWrapperAds> getAdsByTitle(@RequestParam String title) {
+        if (title.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        ResponseWrapperAds responseWrapperAds = adsService.getAdsByTitle(title);
+        if (responseWrapperAds == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(responseWrapperAds);
+    }
 }
