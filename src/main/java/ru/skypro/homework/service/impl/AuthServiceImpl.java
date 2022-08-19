@@ -13,18 +13,22 @@ import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AuthService;
 
 import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
     private final UserDetailsServiceImpl manager;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
 
 
-    public AuthServiceImpl(UserDetailsServiceImpl manager, UserRepository userRepository, RoleRepository roleRepository) {
+    public AuthServiceImpl(UserDetailsServiceImpl manager, UserRepository userRepository, RoleRepository roleRepository, RoleRepository roleRepository1) {
         this.manager = manager;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository1;
         this.encoder = new BCryptPasswordEncoder();
     }
 
@@ -51,7 +55,14 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(encoder.encode(regReq.getPassword()));
         Role userRole = new Role();
         userRole.setRoleName("ROLE_" + role.name());
-        user.setRoles(Collections.singleton(userRole));
+        Set<Role> roles = roleRepository.findAll().stream()
+                .filter(r -> r.getRoleName().equals(userRole.getRoleName()))
+                .collect(Collectors.toSet());
+        if (!roles.isEmpty()) {
+            user.setRoles(roles);
+        } else {
+            user.setRoles(Collections.singleton(userRole));
+        }
         userRepository.save(user);
         return true;
     }
