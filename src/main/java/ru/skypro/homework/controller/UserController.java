@@ -3,11 +3,12 @@ package ru.skypro.homework.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skypro.homework.dto.CreateUser;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.ResponseWrapperUser;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.service.UserService;
+
+import java.security.Principal;
 
 @RestController
 @CrossOrigin(value = "http://localhost:3000")
@@ -17,18 +18,6 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
-    }
-
-    @PostMapping
-    public ResponseEntity<CreateUser> addUser(@RequestBody CreateUser createUser) {
-        if (createUser == null) {
-            return ResponseEntity.notFound().build();
-        }
-        UserDto userDto = userService.addUser(createUser);
-        if (userDto == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        return ResponseEntity.ok(createUser);
     }
 
     @GetMapping("/me")
@@ -41,14 +30,15 @@ public class UserController {
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto, Principal principal) {
         if (userDto == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        UserDto user = userService.updateUser(userDto);
+        UserDto user = userService.updateUser(userDto, principal);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+
         return ResponseEntity.ok(user);
     }
 

@@ -25,6 +25,7 @@ public interface AdsMapper {
     List<Ads> adsDtoToAds(List<AdsDto> adsDto);
 
     @Mapping(target = "author", ignore = true)
+    @Mapping(target = "pk", ignore = true)
     Ads createAdsToAds(CreateAds createAds);
 
     @Mapping(source = "author.id", target = "author")

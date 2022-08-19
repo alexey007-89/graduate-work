@@ -2,7 +2,6 @@ package ru.skypro.homework.service.impl;
 
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
-import ru.skypro.homework.dto.CreateUser;
 import ru.skypro.homework.dto.ResponseWrapperUser;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.entity.User;
@@ -10,6 +9,7 @@ import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -21,13 +21,6 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-    }
-
-    @Override
-    public UserDto addUser(CreateUser createUser) {
-        User user = mapper.createUserToUser(createUser);
-        userRepository.save(user);
-        return mapper.userToUserDto(user);
     }
 
     @Override
@@ -43,9 +36,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto) {
-        User user = userRepository.findById(userDto.getId()).orElseThrow(NoSuchElementException::new);
-        return mapper.userToUserDto(user);
+    public UserDto updateUser(UserDto userDto, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        if (user == null) {
+            throw new NoSuchElementException();
+        }
+        user.setEmail(userDto.getEmail());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setPhone(userDto.getPhone());
+        userRepository.save(user);
+        return userDto;
     }
 
     @Override
