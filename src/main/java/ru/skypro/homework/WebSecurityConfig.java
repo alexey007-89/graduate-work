@@ -2,6 +2,7 @@ package ru.skypro.homework;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -11,8 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.skypro.homework.service.impl.UserDetailsServiceImpl;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -43,13 +42,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests()
-                .antMatchers(AUTH_WHITELIST).permitAll()
+        http.cors().and().csrf().disable().authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/login", "/register").permitAll()
+                .antMatchers(HttpMethod.GET, "/ads").permitAll()
                 .antMatchers("/ads/**", "/users/**").authenticated()
+                .mvcMatchers(AUTH_WHITELIST).permitAll()
                 .and()
-                .httpBasic(withDefaults())
-                .csrf().disable()
-                .cors().disable();
+                .httpBasic();
     }
 
     @Bean

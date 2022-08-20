@@ -90,6 +90,21 @@ GET http://localhost:8080/ads
 Content-Type: application/json
 Authorization: Basic user password
 
+###
+GET http://localhost:8080/users/me
+Content-Type: application/json
+Authorization: Basic Alexey007-89@mail.ru 11111111
+
+###
+POST http://localhost:8080/users/set_password
+Content-Type: application/json
+Authorization: Basic Alexey007-89@mail.ru 11111111
+
+{
+  "newPassword": "22222222",
+  "currentPassword": "11111111"
+}
+
 
 
 

@@ -41,7 +41,6 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new NoSuchElementException();
         }
-        user.setEmail(userDto.getEmail());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setPhone(userDto.getPhone());

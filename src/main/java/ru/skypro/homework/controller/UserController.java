@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.ResponseWrapperUser;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.UserService;
 
 import java.security.Principal;
@@ -15,9 +16,11 @@ import java.security.Principal;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final AuthService authService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
     }
 
     @GetMapping("/me")
@@ -43,8 +46,15 @@ public class UserController {
     }
 
     @PostMapping("/set_password")
-    public ResponseEntity<NewPassword> setPassword(@RequestBody NewPassword newPassword) {
-        return ResponseEntity.ok(newPassword);
+    public ResponseEntity<NewPassword> setPassword(@RequestBody NewPassword newPassword, Principal principal) {
+        if (newPassword == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        if (authService.setPassword(newPassword, principal)) {
+            return ResponseEntity.ok(newPassword);
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 
     @GetMapping("/{id}")
