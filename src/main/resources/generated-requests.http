@@ -14,11 +14,8 @@ POST http://localhost:8080/login
 Content-Type: application/json
 
 {
-   "username": "user",
-   "password": "password",
-   "firstName":  " asdad",
-   "lastName": " asdad",
-   "phone":  " asdad"
+  "password": "user1",
+  "username": "XJJ6/RoZKJ6lo39YSWmwJ.GbdLIW2nAma7ZD958er3fp2LSGQ0JSm"
 }
 
 ###
@@ -26,8 +23,9 @@ POST http://localhost:8080/register
 Content-Type: application/json
 
 {
-  "username": "user12",
-  "password": "password1"
+  "password": "password",
+  "role": "USER",
+  "username": "username"
 }
 
 ###
@@ -91,6 +89,21 @@ Authorization: Basic user password
 GET http://localhost:8080/ads
 Content-Type: application/json
 Authorization: Basic user password
+
+###
+GET http://localhost:8080/users/me
+Content-Type: application/json
+Authorization: Basic Alexey007-89@mail.ru 11111111
+
+###
+POST http://localhost:8080/users/set_password
+Content-Type: application/json
+Authorization: Basic Alexey007-89@mail.ru 11111111
+
+{
+  "newPassword": "22222222",
+  "currentPassword": "11111111"
+}
 
 
 
