@@ -12,10 +12,10 @@ public class AdsComment {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User author;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "ads_id", nullable = false)
+    @JoinColumn(name = "ads_id")
     private Ads pk;
     private LocalDateTime createdAt;
     private String text;

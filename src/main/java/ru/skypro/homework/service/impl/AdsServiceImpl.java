@@ -6,7 +6,7 @@ import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.AdsComment;
 import ru.skypro.homework.entity.User;
-import ru.skypro.homework.mapStruct.AdsMapper;
+import ru.skypro.homework.mapper.AdsMapper;
 import ru.skypro.homework.repository.AdsCommentRepository;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -31,13 +31,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public ResponseWrapperAds getAllAds() {
         List<Ads> adsList = adsRepository.findAll();
-        List<AdsDto> adsDtoList = mapper.adsToAdsDto(adsList);
-        ResponseWrapperAds responseWrapperAds = new ResponseWrapperAds();
-        if (!adsDtoList.isEmpty()) {
-            responseWrapperAds.setCount(adsDtoList.size());
-            responseWrapperAds.setResults(adsDtoList);
-        }
-        return responseWrapperAds;
+        return getResponseWrapperAds(adsList);
     }
 
     @Override
@@ -51,13 +45,7 @@ public class AdsServiceImpl implements AdsService {
     public ResponseWrapperAds getAdsMe(Boolean authenticated, String authorities0Authority, Object credentials, Object details, Object principal) {
 //        пока не понятно что делать со всеми этими параметрами
         List<Ads> adsList = adsRepository.findAll();
-        List<AdsDto> adsDtoList = mapper.adsToAdsDto(adsList);
-        ResponseWrapperAds responseWrapperAds = new ResponseWrapperAds();
-        if (!adsDtoList.isEmpty()) {
-            responseWrapperAds.setCount(adsDtoList.size());
-            responseWrapperAds.setResults(adsDtoList);
-        }
-        return responseWrapperAds;
+        return getResponseWrapperAds(adsList);
     }
 
     @Override
@@ -133,5 +121,22 @@ public class AdsServiceImpl implements AdsService {
         ads.setPk(id);
         adsRepository.save(ads);
         return adsDto;
+    }
+
+    @Override
+    public ResponseWrapperAds getAdsByTitle(String title) {
+        List<Ads> adsList = adsRepository.findLikeTitle(title);
+        return getResponseWrapperAds(adsList);
+
+    }
+
+    private ResponseWrapperAds getResponseWrapperAds(List<Ads> adsList) {
+        List<AdsDto> adsDtoList = mapper.adsToAdsDto(adsList);
+        ResponseWrapperAds responseWrapperAds = new ResponseWrapperAds();
+        if (!adsDtoList.isEmpty()) {
+            responseWrapperAds.setCount(adsDtoList.size());
+            responseWrapperAds.setResults(adsDtoList);
+        }
+        return responseWrapperAds;
     }
 }
