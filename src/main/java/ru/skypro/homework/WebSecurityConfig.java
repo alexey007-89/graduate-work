@@ -31,15 +31,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userDetailsService = userDetailsService;
     }
 
-    //    @Bean
-//    public InMemoryUserDetailsManager userDetailsService() {
-//        UserDetails user = User.withDefaultPasswordEncoder()
-//                .username("user@gmail.com")
-//                .password("password")
-//                .roles("USER")
-//                .build();
-//        return new InMemoryUserDetailsManager(user);
-//    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
@@ -69,32 +60,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 
-
-    //    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf().disable()
-//                .authorizeHttpRequests((authz) ->
-//                        authz
-//                                .antMatchers((AUTH_WHITELIST)).permitAll()
-//                                .antMatchers("/ads/**", "/users/**").authenticated()
-//
-//                )
-//                .cors().disable()
-//                .httpBasic(withDefaults());
-//        return http.build();
-//    @Configuration
-//    @EnableGlobalMethodSecurity(securedEnabled = true)
-//    public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
-//    }
-//    @Bean
-//    public AuthenticationManager customAuthenticationManager() throws Exception {
-//        return authenticationManager();
-//    }
-//
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-//    }
 }
 
