@@ -1,9 +1,15 @@
 package ru.skypro.homework.service;
 
 import ru.skypro.homework.dto.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface AdsService {
     ResponseWrapperAds getAllAds();
+
+    AdsDto createAds(CreateAds createAds, MultipartFile file, Authentication authentication) throws IOException;
 
     AdsDto addAds(CreateAds createAds);
 
@@ -26,4 +32,5 @@ public interface AdsService {
     AdsDto updateAds(int id, AdsDto adsDto);
 
     ResponseWrapperAds getAdsByTitle(String title);
+
 }

@@ -17,4 +17,5 @@ public class Ads {
     private String image;
     private String title;
     private String description;
+
 }

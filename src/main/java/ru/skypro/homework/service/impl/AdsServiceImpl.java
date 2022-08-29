@@ -11,7 +11,10 @@ import ru.skypro.homework.repository.AdsCommentRepository;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdsService;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -21,17 +24,28 @@ public class AdsServiceImpl implements AdsService {
     private final AdsCommentRepository adsCommentRepository;
     private final UserRepository userRepository;
     private final AdsMapper mapper = Mappers.getMapper(AdsMapper.class);
+    private final ImageServiceImpl imageServiceImpl;
 
-    public AdsServiceImpl(AdsRepository adsRepository, AdsCommentRepository adsCommentRepository, UserRepository userRepository) {
+    public AdsServiceImpl(AdsRepository adsRepository, AdsCommentRepository adsCommentRepository, UserRepository userRepository,  ImageServiceImpl imageServiceImpl) {
         this.adsRepository = adsRepository;
         this.adsCommentRepository = adsCommentRepository;
         this.userRepository = userRepository;
+        this.imageServiceImpl = imageServiceImpl;
     }
 
     @Override
     public ResponseWrapperAds getAllAds() {
         List<Ads> adsList = adsRepository.findAll();
         return getResponseWrapperAds(adsList);
+    }
+
+    @Override
+    public AdsDto createAds(CreateAds createAds, MultipartFile file, Authentication authentication) throws IOException {
+        Ads ads = mapper.createAdsToAds(createAds);
+        ads.setAuthor(userRepository.findUsersByUserName(authentication.getName()));
+        ads.setImage("/api/" + imageServiceImpl.uploadAdsImage(ads.getPk(), file) + "/image");
+        adsRepository.save(ads);
+        return mapper.adsToAdsDto(ads);
     }
 
     @Override
@@ -139,4 +153,5 @@ public class AdsServiceImpl implements AdsService {
         }
         return responseWrapperAds;
     }
+
 }

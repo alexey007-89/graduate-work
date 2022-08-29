@@ -10,12 +10,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.AdsDto;
+import ru.skypro.homework.dto.CreateAds;
 import ru.skypro.homework.dto.ImageDto;
+import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.exception.NotFoundException;
+import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.impl.AdsServiceImpl;
 import ru.skypro.homework.service.impl.ImageServiceImpl;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.List;
 
@@ -32,61 +42,36 @@ public class ImageController {
 
     private final Logger logger = LoggerFactory.getLogger(ImageController.class);
     private final ImageServiceImpl imageServiceImpl;
+    private final AdsServiceImpl adsServiceImpl;
 
-    public ImageController(ImageServiceImpl imageServiceImpl) {
+
+    public ImageController(ImageServiceImpl imageServiceImpl, AdsServiceImpl adsServiceImpl) {
         this.imageServiceImpl = imageServiceImpl;
+        this.adsServiceImpl = adsServiceImpl;
     }
 
 
+    @PostMapping
+    public ResponseEntity<AdsDto> createAds(@RequestPart("properties") @Valid CreateAds ads,
+                                         @RequestPart("image") @Valid @NotNull MultipartFile file) throws IOException {
 
-    @PostMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ImageDto> uploadAdsImage(@PathVariable @Min(1) Integer id,
-                                                     @RequestParam MultipartFile adsImage) {
-
-        ImageDto imageDto;
-        try{
-            imageDto = imageServiceImpl.uploadAdsImage(id, adsImage);
-        } catch (IOException | NotFoundException e){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(imageDto);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(adsServiceImpl.createAds(ads, file, authentication));
     }
 
+    @GetMapping(value = "/api/image/{id}", produces = {MediaType.IMAGE_PNG_VALUE})
+    public ResponseEntity<byte[]> getAdsAvatar(@PathVariable("id") Long id) {
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<byte[]> downloadImage(@PathVariable @Min(1) Long id) {
-        Image image = imageServiceImpl.findImageById(id);
-        if (image.getMediaType() == null) {
-            return ResponseEntity.notFound().build();
-        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(image.getMediaType()));
-        headers.setContentLength(image.getData().length);
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(image.getData());
+        return (ResponseEntity<byte[]>) imageServiceImpl.downloadImage(id);
     }
-
-
-    @GetMapping(value = "/all/{idAds}")
-    public List<ResponseEntity<byte[]>> downloadImageByAds(@PathVariable @Min(1) Long id) {
-
-        return imageServiceImpl.downloadImage(id);
-    }
-
 
 
     @DeleteMapping
-    public ResponseEntity<Image> delete(@RequestParam(required = false) @Min(1) Long id,
-                                          @RequestParam(required = false) boolean all) {
-        logger.info("Method delete is running");
-        if (all) {
-            imageServiceImpl.deleteAll();
-            return ok().build();
-        }
+    public ResponseEntity<Image> delete(@RequestParam(required = false) @Min(1) Long id) {
         if (id != null) {
             imageServiceImpl.deleteImage(id);
             return ok().build();
         }
         return ResponseEntity.notFound().build();
     }
-
 }
