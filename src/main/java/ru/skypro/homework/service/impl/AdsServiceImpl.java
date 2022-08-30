@@ -1,7 +1,9 @@
 package ru.skypro.homework.service.impl;
 
 import org.mapstruct.factory.Mappers;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.entity.Ads;
 import ru.skypro.homework.entity.AdsComment;
@@ -11,8 +13,6 @@ import ru.skypro.homework.repository.AdsCommentRepository;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdsService;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,7 +42,7 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public AdsDto createAds(CreateAds createAds, MultipartFile file, Authentication authentication) throws IOException {
         Ads ads = mapper.createAdsToAds(createAds);
-        ads.setAuthor(userRepository.findUsersByUserName(authentication.getName()));
+        ads.setAuthor(userRepository.findUsersByEmailOrderById(authentication.getName()));
         ads.setImage("/api/" + imageServiceImpl.uploadAdsImage(ads.getPk(), file) + "/image");
         adsRepository.save(ads);
         return mapper.adsToAdsDto(ads);
