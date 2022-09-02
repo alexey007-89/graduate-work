@@ -1,5 +1,6 @@
 package ru.skypro.homework.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -24,7 +25,10 @@ public class ImageController {
         this.imageServiceImpl = imageServiceImpl;
     }
 
-
+    @Operation(
+            tags = "Фото объявлений (ImageController)",
+            summary = "Получение изображения объявления по id (getAdsAvatar)"
+    )
     @GetMapping(value = "/api/{id}/image", produces = {MediaType.IMAGE_PNG_VALUE})
     public ResponseEntity<byte[]> getAdsAvatar(@PathVariable("id") String id) {
 

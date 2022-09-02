@@ -15,13 +15,13 @@ public interface AdsService {
 
     ResponseWrapperAdsComment getAdsComments(int pk);
 
-    AdsCommentDto addAdsComment(int pk, AdsCommentDto adsCommentDto);
+    AdsCommentDto addAdsComment(int pk, AdsCommentDto adsCommentDto, String username);
 
-    AdsCommentDto deleteAdsComment(int pk, int id);
+    AdsCommentDto deleteAdsComment(int pk, int id, Authentication authentication);
 
     AdsCommentDto getAdsComment(int pk, int id);
 
-    AdsCommentDto updateAdsComment(int pk, int id, AdsCommentDto adsCommentDto);
+    AdsCommentDto updateAdsComment(int pk, int id, AdsCommentDto adsCommentDto, Authentication authentication);
 
     AdsDto removeAds(int id, Authentication authentication);
 

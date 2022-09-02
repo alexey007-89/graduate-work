@@ -106,7 +106,7 @@ Authorization: Basic Alexey007-89@mail.ru 11111111
 }
 
 ###
-POST http://localhost:8080/ads/1/comment
+POST http://localhost:8080/ads/1/comments
 Content-Type: application/json
 Authorization: Basic Alexey007-89@mail.ru 11111111
 
@@ -118,17 +118,17 @@ Authorization: Basic Alexey007-89@mail.ru 11111111
 }
 
 ###
-GET http://localhost:8080/ads/1/comment
+GET http://localhost:8080/ads/1/comments
 Content-Type: application/json
 Authorization: Basic Alexey007-89@mail.ru 11111111
 
 ###
-DELETE http://localhost:8080/ads/1/comment/1
+DELETE http://localhost:8080/ads/1/comments/1
 Content-Type: application/json
 Authorization: Basic Alexey007-89@mail.ru 11111111
 
 ###
-GET http://localhost:8080/ads/2/comment/2
+GET http://localhost:8080/ads/1/comments/3
 Content-Type: application/json
 Authorization: Basic Alexey007-89@mail.ru 11111111
 
