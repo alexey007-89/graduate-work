@@ -37,6 +37,7 @@ public interface AdsMapper {
     @Mapping(source = "author", target = "author.id")
     @Mapping(source = "pk", target = "pk.pk")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     AdsComment adsCommentDtoToAdsComment(AdsCommentDto adsCommentDto);
 
     List<AdsComment> adsCommentDtoToAdsComment(List<AdsCommentDto> adsCommentDto);

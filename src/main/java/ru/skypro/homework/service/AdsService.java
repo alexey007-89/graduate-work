@@ -1,29 +1,34 @@
 package ru.skypro.homework.service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+
+import java.security.Principal;
 
 public interface AdsService {
     ResponseWrapperAds getAllAds();
 
-    AdsDto addAds(CreateAds createAds);
+    AdsDto createAds(CreateAds createAds, MultipartFile file, Authentication authentication);
 
-    ResponseWrapperAds getAdsMe(Boolean authenticated, String authorities0Authority, Object credentials, Object details, Object principal);
+    ResponseWrapperAds getAdsMe(Principal principal);
 
     ResponseWrapperAdsComment getAdsComments(int pk);
 
-    AdsCommentDto addAdsComment(int pk, AdsCommentDto adsCommentDto);
+    AdsCommentDto addAdsComment(int pk, AdsCommentDto adsCommentDto, String username);
 
-    AdsCommentDto deleteAdsComment(int pk, int id);
+    AdsCommentDto deleteAdsComment(int pk, int id, Authentication authentication);
 
     AdsCommentDto getAdsComment(int pk, int id);
 
-    AdsCommentDto updateAdsComment(int pk, int id, AdsCommentDto adsCommentDto);
+    AdsCommentDto updateAdsComment(int pk, int id, AdsCommentDto adsCommentDto, Authentication authentication);
 
-    AdsDto removeAds(int id);
+    AdsDto removeAds(int id, Authentication authentication);
 
     FullAds getAds(int id);
 
-    AdsDto updateAds(int id, AdsDto adsDto);
+    AdsDto updateAds(int id, AdsDto adsDto, MultipartFile file, Authentication authentication);
 
     ResponseWrapperAds getAdsByTitle(String title);
+
 }

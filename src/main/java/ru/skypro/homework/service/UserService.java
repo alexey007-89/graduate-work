@@ -7,7 +7,7 @@ import java.security.Principal;
 
 public interface UserService {
 
-    ResponseWrapperUser getUsers();
+    ResponseWrapperUser getCurrentUser(String username);
 
     UserDto updateUser(UserDto userDto, Principal principal);
 

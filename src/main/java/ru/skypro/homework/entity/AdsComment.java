@@ -3,7 +3,7 @@ package ru.skypro.homework.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @Entity
@@ -17,6 +17,6 @@ public class AdsComment {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ads_id")
     private Ads pk;
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     private String text;
 }

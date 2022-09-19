@@ -2,12 +2,21 @@ package ru.skypro.homework.dto;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
+import java.time.OffsetDateTime;
 
 @Data
 public class AdsCommentDto {
+    @Positive
     private int author;
-    private LocalDateTime createdAt;
+    @PastOrPresent
+    private OffsetDateTime createdAt;
+    @Positive
     private int pk;
+    @NotBlank
+    @Size(min = 8)
     private String text;
 }

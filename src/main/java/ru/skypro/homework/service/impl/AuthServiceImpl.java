@@ -26,7 +26,6 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
 
-
     public AuthServiceImpl(UserDetailsServiceImpl manager, UserRepository userRepository, RoleRepository roleRepository) {
         this.manager = manager;
         this.userRepository = userRepository;
@@ -34,6 +33,13 @@ public class AuthServiceImpl implements AuthService {
         this.encoder = new BCryptPasswordEncoder();
     }
 
+    /**
+     * Account login by username and password
+     *
+     * @param userName - username from client
+     * @param password - password from client
+     * @return boolean result of login
+     */
     @Override
     public boolean login(String userName, String password) {
         UserDetails userDetails = manager.loadUserByUsername(userName);
@@ -41,26 +47,15 @@ public class AuthServiceImpl implements AuthService {
         return encoder.matches(password, encryptedPassword);
     }
 
+    /**
+     * New user registration
+     *
+     * @param regReq - new user information from client
+     * @param role   - users role from client
+     * @return boolean result of registration
+     */
     @Override
     public boolean register(RegReq regReq, RoleDTO role) {
-        return createUser(regReq, role);
-    }
-
-    @Override
-    public boolean setPassword(NewPassword newPassword, Principal principal) {
-        UserDetails userDetails = manager.loadUserByUsername(principal.getName());
-        String encryptedPassword = userDetails.getPassword();
-        if (encoder.matches(newPassword.getCurrentPassword(), encryptedPassword)) {
-            User userFromDB = userRepository.findByUsername(principal.getName());
-            userFromDB.setPassword(encoder.encode(newPassword.getNewPassword()));
-            userRepository.save(userFromDB);
-            return true;
-        }
-        return false;
-    }
-
-
-    private boolean createUser(RegReq regReq, RoleDTO role) {
         User userFromDB = userRepository.findByUsername(regReq.getUsername());
         if (userFromDB != null) {
             return false;
@@ -68,6 +63,9 @@ public class AuthServiceImpl implements AuthService {
         User user = new User();
         user.setEmail(regReq.getUsername());
         user.setPassword(encoder.encode(regReq.getPassword()));
+        user.setFirstName(regReq.getFirstName());
+        user.setLastName(regReq.getLastName());
+        user.setPhone(regReq.getPhone());
         Role userRole = new Role();
         userRole.setRoleName("ROLE_" + role.name());
         Set<Role> roles = roleRepository.findAll().stream()
@@ -80,5 +78,25 @@ public class AuthServiceImpl implements AuthService {
         }
         userRepository.save(user);
         return true;
+    }
+
+    /**
+     * Change user's password
+     *
+     * @param newPassword - user's password information from client
+     * @param principal   - user's principal
+     * @return boolean result of changing password
+     */
+    @Override
+    public boolean setPassword(NewPassword newPassword, Principal principal) {
+        UserDetails userDetails = manager.loadUserByUsername(principal.getName());
+        String encryptedPassword = userDetails.getPassword();
+        if (encoder.matches(newPassword.getCurrentPassword(), encryptedPassword)) {
+            User userFromDB = userRepository.findByUsername(principal.getName());
+            userFromDB.setPassword(encoder.encode(newPassword.getNewPassword()));
+            userRepository.save(userFromDB);
+            return true;
+        }
+        return false;
     }
 }
